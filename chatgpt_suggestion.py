@@ -1,5 +1,5 @@
 import os
-import argparse
+import sys
 import pyperclip
 from pathlib import Path
 
@@ -21,7 +21,7 @@ def process_code_file(directory: Path) -> str:
 
 def directory_to_chat_response(project_directory: Path) -> str:
     message = []
-    
+    breakpoint()
     if project_directory.is_file():
         if is_valid_file_type(project_directory):
             message.append(process_code_file(project_directory))
@@ -40,18 +40,12 @@ def directory_to_chat_response(project_directory: Path) -> str:
     return '\n'.join(message)
 
 def main():
-    parser = argparse.ArgumentParser(
-        description='Generate a message prompt for chatgpt with the contents of a code project',
-    )
-    parser.add_argument(
-        'project_directory', 
-        nargs='?', 
-        default=os.path.abspath('./'), 
-        help='directory of code project (default is current directory)',
-    )
-    args = parser.parse_args()
+    directory = sys.argv[1:]
 
-    project = Path(args.project_directory)
+    if not directory:
+        project = Path(os.path.abspath('./'))
+    else:
+        project = Path(os.path.abspath(directory[0]))
     
     if not project.exists():
         print("Project doesn't exist")
