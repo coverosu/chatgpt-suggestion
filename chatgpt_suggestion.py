@@ -70,7 +70,7 @@ def main():
         "(the following text includes the file content, the filename, and the file path of each file in the project that is being worked on)"
     ]
 
-    if no_question:
+    if not no_question:
         message.insert(
             0,
             "Do you have any suggestions about how to make the following code better?",
