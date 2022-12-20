@@ -73,7 +73,7 @@ def main():
     if not no_question:
         message.insert(
             0,
-            "Do you have any suggestions about how to make the following code better?",
+            "Could you provide some specific suggestions on how to improve the readability, structure, and quality of the following code? For example, are there any specific techniques or best practices that could be applied to make the code easier to understand and maintain, or to make it more efficient and performant?",
         )
 
     message.append(directory_to_chat_response(project))
