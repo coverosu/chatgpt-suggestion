@@ -4,7 +4,7 @@ import pyperclip
 from pathlib import Path
 
 VALID_FILE_TYPES = [".py"]
-IGNORE = [".git", ".gitignore"]
+ignored_directories = [".git"]
 FINAL_MESSAGE_PROMPT = "\n".join(
     [
         "Message prompt has been pasted into clipboard, paste it into chatgpt for response.",
@@ -25,6 +25,18 @@ def process_code_file(directory: Path) -> str:
     )
 
 
+def add_git_ignore_to_ignore_directories(git_ignore: Path) -> None:
+    for ignored in git_ignore.read_text(errors="ignore").splitlines():
+        if ignored.endswith("/"):
+            ignored = ignored.removesuffix("/")
+
+        ignored_directories.append(ignored)
+
+    ignored_directories.append(
+        git_ignore.name,
+    )
+
+
 def directory_to_chat_response(project_directory: Path) -> str:
     message = []
 
@@ -34,8 +46,12 @@ def directory_to_chat_response(project_directory: Path) -> str:
         else:
             print(f"Currently don't support {project_directory.name} file type.")
     else:
+        git_ignore = project_directory / ".gitignore"
+        if git_ignore.exists():
+            add_git_ignore_to_ignore_directories(git_ignore)
+
         for directory in project_directory.iterdir():
-            if directory.name in IGNORE:
+            if directory.name in ignored_directories:
                 print(f"Ignoring {directory.name}")
             elif directory.is_dir():
                 response = directory_to_chat_response(directory)
